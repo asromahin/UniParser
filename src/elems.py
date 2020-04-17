@@ -62,17 +62,18 @@ class UniTable(UniElem):
         res_df = []
         #print('1')
         for i in range(len(self.rows_data)):
-            #row = self.rows_data[i]
+            row = self.rows_data[i]
             row_data = {}
             #print('row=', i)
             for spec_attr in specific_attrs:
                 attr = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), spec_attr)
                 if attr:
                     row_data[spec_attr] = attr
-#            for j, column in enumerate(row):
+            for j in range(len(row)):
+                column = row[j]
                 #print('column=', j)
-#                if column.text:
-#                    row_data[str(j)+"_text"] = column.text
+                if column.text:
+                    row_data[str(j)+"_text"] = column.text
             res_df.append(row_data)
         return pd.DataFrame(res_df)
 
