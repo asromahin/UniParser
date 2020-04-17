@@ -2,6 +2,7 @@ from selenium import webdriver
 import pandas as pd
 from tqdm import tqdm
 from bs4 import BeautifulSoup
+from src.constants import LIST_PAGINATION_ATTRS, FILTERED_SYMBOLS
 
 def init_wd():
     chrome_options = webdriver.ChromeOptions()
@@ -45,3 +46,8 @@ def get_tree_attr_value(elem,attribute):
             return child[attribute]
     return None
 
+def filter_string(str):
+    for symbol in FILTERED_SYMBOLS:
+        str = str.replace(symbol, '')
+    str = str.strip()
+    return str

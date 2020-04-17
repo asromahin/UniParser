@@ -1,5 +1,5 @@
-from src.utils import delete_parents, get_tree_attr_value
-from src.constants import LIST_PAGINATION_ATTRS
+from src.utils import delete_parents, get_tree_attr_value, filter_string
+
 from bs4 import BeautifulSoup
 import pandas as pd
 
@@ -76,14 +76,15 @@ class UniTable(UniElem):
             #        row_data[spec_attr] = attr
             for j in range(len(row)):
                 #if row[j].text:
-                row_data[str(j)+"_text"] = row[j].getText()
+                row_data[str(j)+"_text"] = filter_string(row[j].getText())
                 #    pass
             res_df.append(row_data.copy())
             #except:
              #   pass
                 #self.index_drop = i
         return res_df
-    
+
+
 
 
 
