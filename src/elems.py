@@ -55,7 +55,8 @@ class UniTable(UniElem):
                 self.rows_data = []
                 for row in self.rows:
                     columns = self.get_columns(row, self.columns_tag)
-                    self.rows_data.append(columns)
+                    if columns:
+                        self.rows_data.append(columns)
 
     def get_rows(self, table, rows_name):
         return table.find_all(rows_name)
