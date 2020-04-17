@@ -80,7 +80,8 @@ class UniTable(UniElem):
             #except:
              #   pass
                 #self.index_drop = i
-        return pd.DataFrame(res_df)
+        return res_df
+    
 
 
 
