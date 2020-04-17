@@ -55,10 +55,10 @@ class UniTable(UniElem):
                     self.rows_data.append(columns)
 
     def get_rows(self, table, rows_name):
-        return table.find_all(tag=rows_name)
+        return table.find_all(rows_name)
 
     def get_columns(self, row, columns_name):
-        return row.find_all(tag=columns_name)
+        return row.find_all(columns_name)
 
     def to_df(self, specific_attrs=[]):
         res_df = []
