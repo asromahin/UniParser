@@ -61,7 +61,8 @@ class UniTable(UniElem):
     def to_df(self, specific_attrs=[]):
         res_df = []
         #print('1')
-        for i, row in enumerate(self.rows_data):
+        for i in range(len(self.rows_data)):
+            #row = self.rows_data[i]
             row_data = {}
             #print('row=', i)
             for spec_attr in specific_attrs:
