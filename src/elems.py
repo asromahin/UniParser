@@ -42,7 +42,9 @@ class UniTable(UniElem):
         self.reinit(table_elem)
 
     def reinit(self, new_table):
+
         self.table_elem = new_table
+        self.table_elem = BeautifulSoup(self.table_elem.get_attribute('innerHTML'), 'html.parser')
         if self.rows_tag:
             self.rows = self.get_rows(self.table_elem, self.rows_tag)
         if self.columns_tag:
@@ -53,10 +55,10 @@ class UniTable(UniElem):
                     self.rows_data.append(columns)
 
     def get_rows(self, table, rows_name):
-        return table.find_elements_by_tag_name(rows_name)
+        return table.find_all(tag=rows_name)
 
     def get_columns(self, row, columns_name):
-        return row.find_elements_by_tag_name(columns_name)
+        return row.find_all(tag=columns_name)
 
     def to_df(self, specific_attrs=[]):
         res_df = []
