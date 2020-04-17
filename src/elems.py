@@ -58,7 +58,7 @@ class UniTable(UniElem):
         res_df = []
         for i, row in enumerate(self.rows_data):
             row_data = {}
-            href = get_tree_attr_value(self.rows[i], 'href')
+            href = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), 'href')
             if href:
                 row_data['href'] = href
             for column in row:
