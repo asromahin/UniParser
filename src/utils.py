@@ -27,3 +27,12 @@ def delete_parents(elems):
       elems.remove(del_elem)
     return elems
 
+def get_tree_attrs(elem):
+    soup = BeautifulSoup(elem, 'html.parser')
+    children = soup.findChildren(recursive=True)
+    all_attrs = []
+    for child in children:
+        all_attrs.expand(child.attrs)
+    all_attrs = list(set(all_attrs))
+    return all_attrs
+

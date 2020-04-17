@@ -58,7 +58,8 @@ class UniTable(UniElem):
         res_df = []
         for i, row in enumerate(self.rows_data):
             row_data = {}
-            row_data['href'] = self.rows[i].get_attribute('href')
+            soup = BeautifulSoup(self.rows[i], 'html.parser')
+            row_data['href'] = soup.attrs
             for column in row:
                 if column.text:
                     row_data[column.get_attribute('class')+"_text"] = column.text
