@@ -60,8 +60,8 @@ class UniTable(UniElem):
 
     def to_df(self, specific_attrs=[]):
         res_df = []
-        if self.index_drop:
-            self.rows_data = self.rows_data.delete(self.rows_data[self.index_drop])
+        #if self.index_drop:
+        #    self.rows_data = self.rows_data.delete(self.rows_data[self.index_drop])
         column_len = len(self.rows_data[-1])
         column_rng = range(column_len)
         for i in range(len(self.rows_data)):
@@ -77,7 +77,8 @@ class UniTable(UniElem):
                         row_data[str(j)+"_text"] = row[j].text
                 res_df.append(row_data)
             except:
-                self.index_drop = i
+                pass
+                #self.index_drop = i
         return pd.DataFrame(res_df)
 
 
