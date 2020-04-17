@@ -35,11 +35,14 @@ class UniTable(UniElem):
 
     def __init__(self, wd, table_elem, rows_tag=None, columns_tag=None):
         super().__init__(wd)
-        self.table_elem = table_elem
 
         self.rows_tag = rows_tag
         self.columns_tag = columns_tag
 
+        self.reinit(table_elem)
+
+    def reinit(self, new_table):
+        self.table_elem = new_table
         if self.rows_tag:
             self.rows = self.get_rows(self.table_elem, self.rows_tag)
         if self.columns_tag:
@@ -57,18 +60,18 @@ class UniTable(UniElem):
 
     def to_df(self, specific_attrs=[]):
         res_df = []
-        print('1')
+        #print('1')
         for i, row in enumerate(self.rows_data):
             row_data = {}
-            print('row=', i)
+            #print('row=', i)
             for spec_attr in specific_attrs:
                 attr = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), spec_attr)
                 if attr:
                     row_data[spec_attr] = attr
-            for j, column in enumerate(row):
-                print('column=', j)
-                if column.text:
-                    row_data[str(j)+"_text"] = column.text
+#            for j, column in enumerate(row):
+                #print('column=', j)
+#                if column.text:
+#                    row_data[str(j)+"_text"] = column.text
             res_df.append(row_data)
         return pd.DataFrame(res_df)
 
