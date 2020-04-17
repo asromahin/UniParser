@@ -72,9 +72,9 @@ class UniTable(UniElem):
             #    attr = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), spec_attr)
             #    if attr:
             #        row_data[spec_attr] = attr
-            for j in range(len(row)):
+            for j in column_rng:
                 #if row[j].text:
-                row_data[str(j)+"_text"] = row[j].text
+                row_data[str(j)+"_text"] = 0#row[j].text
                 #    pass
             res_df.append(row_data.copy())
             #except:
