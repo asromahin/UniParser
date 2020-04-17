@@ -37,13 +37,13 @@ class UniTable(UniElem):
         self.table_elem = table_elem
 
         self.rows_tag = rows_tag
-        self.columns_class = columns_tag
+        self.columns_tag = columns_tag
 
         if self.rows_tag:
             self.rows = self.get_rows(self.table_elem, self.rows_tag)
         if self.columns_tag:
             if self.rows:
-                self.columns=[]
+                self.columns = []
                 for row in self.rows:
                     columns = self.get_columns(row, columns_tag)
                     self.columns.append(columns)
