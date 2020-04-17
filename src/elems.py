@@ -74,12 +74,13 @@ class UniTable(UniElem):
                         row_data[spec_attr] = attr
                 for j in column_rng:
                     if row[j].text:
-                        row_data[str(j)+"_text"] = row[j].text
+                        #row_data[str(j)+"_text"] = row[j].text
+                        pass
                 res_df.append(row_data)
             except:
                 pass
                 #self.index_drop = i
-        return res_df
+        return pd.DataFrame(res_df)
 
 
 
