@@ -66,19 +66,19 @@ class UniTable(UniElem):
         column_rng = range(column_len)
         for i in range(len(self.rows_data)):
             row = self.rows_data[i]
-            try:
-                row_data = {}
-                for spec_attr in specific_attrs:
-                    attr = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), spec_attr)
-                    if attr:
-                        row_data[spec_attr] = attr
-                for j in column_rng:
-                    if row[j].text:
-                        #row_data[str(j)+"_text"] = row[j].text
-                        pass
-                res_df.append(row_data)
-            except:
-                pass
+            #try:
+            row_data = {}
+            for spec_attr in specific_attrs:
+                attr = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), spec_attr)
+                if attr:
+                    row_data[spec_attr] = attr
+            for j in column_rng:
+                #if row[j].text:
+                    #row_data[str(j)+"_text"] = row[j].text
+                    pass
+            res_df.append(row_data)
+            #except:
+             #   pass
                 #self.index_drop = i
         return pd.DataFrame(res_df)
 
