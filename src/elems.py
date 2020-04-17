@@ -72,7 +72,7 @@ class UniTable(UniElem):
             #    attr = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), spec_attr)
             #    if attr:
             #        row_data[spec_attr] = attr
-            for j in column_rng:
+            for j in range(len(row)):
                 if row[j].text:
                     row_data[str(j)+"_text"] = row[j].text
                     pass
