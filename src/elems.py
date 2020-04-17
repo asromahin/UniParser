@@ -43,14 +43,26 @@ class UniTable(UniElem):
             self.rows = self.get_rows(self.table_elem, self.rows_tag)
         if self.columns_tag:
             if self.rows:
-                self.columns = []
+                self.rows_data = []
                 for row in self.rows:
                     columns = self.get_columns(row, columns_tag)
-                    self.columns.append(columns)
+                    self.rows_data.append(columns)
 
     def get_rows(self, table, rows_name):
         return table.find_elements_by_tag_name(rows_name)
 
     def get_columns(self, row, columns_name):
         return row.find_elements_by_tag_name(columns_name)
+
+    def to_df(self):
+        res_df = []
+        for row in self.rows_data:
+            row_data = {}
+            row_data['href'] = row.get_attribute('href')
+            for column in row:
+                if column.text:
+                    row_data[column.get_attribute('class')+"_text"] = column.text
+            res_df.append(row_data)
+        return res_df
+
 
