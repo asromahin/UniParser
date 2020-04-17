@@ -60,29 +60,18 @@ class UniTable(UniElem):
     def get_columns(self, row, columns_name):
         return row.find_all(columns_name)
 
-    def to_df(self, specific_attrs=[]):
+    def to_df(self):
         res_df = []
-        #if self.index_drop:
-        #    self.rows_data = self.rows_data.delete(self.rows_data[self.index_drop])
-        column_len = len(self.rows_data[-1])
-        column_rng = range(column_len)
         row_data = {}
         for i in range(len(self.rows_data)):
             row = self.rows_data[i]
-            #try:
-            #for spec_attr in specific_attrs:
-            #    attr = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), spec_attr)
-            #    if attr:
-            #        row_data[spec_attr] = attr
+            print(row.findAll({"href": True}))
             for j in range(len(row)):
-                #if row[j].text:
-                row_data[str(j)+"_text"] = filter_string(row[j].getText())
-                #    pass
+                text_data = row[j].getText()
+                if text_data:
+                    row_data[str(j)+"_text"] = filter_string(text_data)
             res_df.append(row_data.copy())
-            #except:
-             #   pass
-                #self.index_drop = i
-        return res_df
+        return pd.DataFrame(res_df)
 
 
 
