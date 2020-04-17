@@ -64,16 +64,18 @@ class UniTable(UniElem):
     def get_columns(self, row, columns_name):
         return row.find_all(columns_name)
 
-    def to_df(self):
+    def to_df(self, skip_columns=[], skip_rows=[]):
         res_df = []
         row_data = {}
         for i in range(len(self.rows_data)):
-            row = self.rows_data[i]
-            for j in range(len(row)):
-                text_data = row[j].getText()
-                if text_data:
-                    row_data[str(j)+"_text"] = filter_string(text_data)
-            res_df.append(row_data.copy())
+            if not i in skip_rows:
+                row = self.rows_data[i]
+                for j in range(len(row)):
+                    if not j in skip_columns:
+                        text_data = row[j].getText()
+                        if text_data:
+                            row_data[str(j)+"_text"] = filter_string(text_data)
+                res_df.append(row_data.copy())
         return pd.DataFrame(res_df)
 
 
