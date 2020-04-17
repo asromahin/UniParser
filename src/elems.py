@@ -1,4 +1,4 @@
-from src.utils import delete_parents
+from src.utils import delete_parents, get_tree_attr_value
 from src.constants import LIST_PAGINATION_ATTRS
 from bs4 import BeautifulSoup
 
@@ -58,8 +58,9 @@ class UniTable(UniElem):
         res_df = []
         for i, row in enumerate(self.rows_data):
             row_data = {}
-            soup = BeautifulSoup(self.rows[i], 'html.parser')
-            row_data['href'] = soup.attrs
+            href = get_tree_attr_value(self.rows[i], 'href')
+            if href:
+                row_data['href'] = href
             for column in row:
                 if column.text:
                     row_data[column.get_attribute('class')+"_text"] = column.text

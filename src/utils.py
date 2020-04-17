@@ -36,3 +36,12 @@ def get_tree_attrs(elem):
     all_attrs = list(set(all_attrs))
     return all_attrs
 
+def get_tree_attr_value(elem,attribute):
+    soup = BeautifulSoup(elem, 'html.parser')
+    children = soup.findChildren(recursive=True)
+    all_attrs = []
+    for child in children:
+        if(attribute in child.attrs):
+            return child[attribute]
+    return None
+
