@@ -61,9 +61,9 @@ class UniTable(UniElem):
             href = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), 'href')
             if href:
                 row_data['href'] = href
-            for column in row:
+            for j, column in enumerate(row):
                 if column.text:
-                    row_data[column.get_attribute('class')+"_text"] = column.text
+                    row_data[str(j)+"_text"] = column.text
             res_df.append(row_data)
         return res_df
 
