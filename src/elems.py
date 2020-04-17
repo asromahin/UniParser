@@ -1,6 +1,7 @@
 from src.utils import delete_parents, get_tree_attr_value
 from src.constants import LIST_PAGINATION_ATTRS
 from bs4 import BeautifulSoup
+import pandas as pd
 
 
 class UniElem():
@@ -54,17 +55,18 @@ class UniTable(UniElem):
     def get_columns(self, row, columns_name):
         return row.find_elements_by_tag_name(columns_name)
 
-    def to_df(self):
+    def to_df(self, specific_attrs=[]):
         res_df = []
         for i, row in enumerate(self.rows_data):
             row_data = {}
-            href = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), 'href')
-            if href:
-                row_data['href'] = href
+            for spec_attr in specific_attrs:
+                attr = get_tree_attr_value(self.rows[i].get_attribute('innerHTML'), spec_attr)
+                if attr:
+                    row_data[spec_attr] = attr
             for j, column in enumerate(row):
                 if column.text:
                     row_data[str(j)+"_text"] = column.text
             res_df.append(row_data)
-        return res_df
+        return pd.DataFrame(res_df)
 
 
