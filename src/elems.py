@@ -45,6 +45,9 @@ class UniTable(UniElem):
 
         self.table_elem = new_table
         self.table_elem = BeautifulSoup(self.table_elem.get_attribute('innerHTML'), 'html.parser')
+
+        print(self.table_elem.find_all({'href': True}))
+
         if self.rows_tag:
             self.rows = self.get_rows(self.table_elem, self.rows_tag)
         if self.columns_tag:
@@ -65,7 +68,6 @@ class UniTable(UniElem):
         row_data = {}
         for i in range(len(self.rows_data)):
             row = self.rows_data[i]
-            print(row.find({"href": True}))
             for j in range(len(row)):
                 text_data = row[j].getText()
                 if text_data:
