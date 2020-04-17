@@ -21,7 +21,7 @@ class UniPaginator(UniElem):
     def open_page(self, page):
         next = self.next_format.format(page)
         if self.isscript:
-            print(self.wd.execute_script(next))
+            self.wd.execute_script(next)
         else:
             self.wd.get(self.next_format)
         self.current_page = page
@@ -32,20 +32,20 @@ class UniPaginator(UniElem):
 
 class UniTable(UniElem):
 
-    def __init__(self, wd, table_elem, rows_class=None, columns_class=None):
+    def __init__(self, wd, table_elem, rows_tag=None, columns_tag=None):
         super().__init__(wd)
         self.table_elem = table_elem
 
-        self.rows_class = rows_class
-        self.columns_class = columns_class
+        self.rows_tag = rows_tag
+        self.columns_class = columns_tag
 
-        if self.rows_name:
-            self.rows = self.get_rows(self.table_elem, self.rows_name)
-        if self.columns_class:
+        if self.rows_tag:
+            self.rows = self.get_rows(self.table_elem, self.rows_tag)
+        if self.columns_tag:
             if self.rows:
                 self.columns=[]
                 for row in self.rows:
-                    columns = self.get_columns(row, columns_class)
+                    columns = self.get_columns(row, columns_tag)
                     self.columns.append(columns)
 
     def get_rows(self, table, rows_name):
