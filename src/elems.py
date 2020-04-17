@@ -73,9 +73,9 @@ class UniTable(UniElem):
             #    if attr:
             #        row_data[spec_attr] = attr
             for j in range(len(row)):
-                if row[j].text:
-                    row_data[str(j)+"_text"] = row[j].text
-                    pass
+                #if row[j].text:
+                row_data[str(j)+"_text"] = row[j].text
+                #    pass
             res_df.append(row_data.copy())
             #except:
              #   pass
