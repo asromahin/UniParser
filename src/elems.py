@@ -49,7 +49,7 @@ class UniTable(UniElem):
             if self.rows:
                 self.rows_data = []
                 for row in self.rows:
-                    columns = self.get_columns(row, columns_tag)
+                    columns = self.get_columns(row, self.columns_tag)
                     self.rows_data.append(columns)
 
     def get_rows(self, table, rows_name):
