@@ -21,7 +21,7 @@ class UniPaginator(UniElem):
     def open_page(self, page):
         next = self.next_format.format(page)
         if self.isscript:
-            self.wd.execute_script(next)
+            print(self.wd.execute_script(next))
         else:
             self.wd.get(self.next_format)
         self.current_page = page
