@@ -65,7 +65,7 @@ class UniTable(UniElem):
         row_data = {}
         for i in range(len(self.rows_data)):
             row = self.rows_data[i]
-            print(row.find_all({"href": True}))
+            print(row.find({"href": True}))
             for j in range(len(row)):
                 text_data = row[j].getText()
                 if text_data:
