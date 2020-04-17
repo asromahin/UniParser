@@ -56,9 +56,9 @@ class UniTable(UniElem):
 
     def to_df(self):
         res_df = []
-        for row in self.rows_data:
+        for i, row in enumerate(self.rows_data):
             row_data = {}
-            row_data['href'] = row.get_attribute('href')
+            row_data['href'] = self.rows[i].get_attribute('href')
             for column in row:
                 if column.text:
                     row_data[column.get_attribute('class')+"_text"] = column.text
