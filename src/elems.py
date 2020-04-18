@@ -23,7 +23,7 @@ class UniElem():
         soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
 
         tag_elem = get_wd_tag(self.elem)
-        print(tag_elem)
+        #print(tag_elem)
         tag_elems = self.wd.find_elements_by_tag_name(tag_elem)
 
         for elem in tag_elems:
@@ -67,13 +67,12 @@ class UniTable(UniElem):
         self.rows_tag = rows_tag
         self.columns_tag = columns_tag
 
-        self.reinit(table_elem)
+        self.elem = table_elem
 
-    def reinit(self, new_table):
+        self.reinit()
 
+    def reinit(self):
 
-
-        self.elem = new_table
         super().reinit()
         soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
 
