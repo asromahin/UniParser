@@ -69,9 +69,10 @@ class UniTable(UniElem):
 
     def reinit(self, new_table):
 
-        super().reinit()
+
 
         self.elem = new_table
+        super().reinit()
         soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
 
         if self.rows_tag:
