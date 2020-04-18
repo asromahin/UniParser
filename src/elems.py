@@ -22,8 +22,8 @@ class UniElem():
     def reinit_element(self):
         soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
 
-        tag_elems = self.wd.find_elements_by_tag_name(str(soup_elem.tag))
-        print(soup_elem.tag)
+        tag_elems = self.wd.find_elements_by_tag_name(str(soup_elem.name))
+        print(soup_elem.name)
 
         for elem in tag_elems:
             trig = True
