@@ -43,6 +43,12 @@ class UniElem():
                 self.elem = elem
                 break
 
+    def save_as_screen(self, screen_name):
+        if(self.elem):
+            self.wd.execute_script("arguments[0].scrollIntoView();", self.elem)
+            self.wd.save_screenshot(screen_name)
+
+
 
 class UniPaginator(UniElem):
 
