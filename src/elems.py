@@ -14,7 +14,7 @@ class UniElem():
         if(self.elem):
             self.tag_elem = get_wd_tag(self.elem)
             soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
-            self.attrs = soup_elem.attrs
+            self.attrs_elem = soup_elem.attrs
 
 
     def valid_elem(self):
@@ -26,15 +26,15 @@ class UniElem():
                 self.reinit_element()
 
     def reinit_element(self):
-        soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
+        #soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
 
-        tag_elem = get_wd_tag(self.elem)
+        #tag_elem = get_wd_tag(self.elem)
         #print(tag_elem)
-        tag_elems = self.wd.find_elements_by_tag_name(tag_elem)
+        tag_elems = self.wd.find_elements_by_tag_name(self.tag_elem)
 
         for elem in tag_elems:
             trig = True
-            for attr in soup_elem.attrs:
+            for attr in self.attrs_elem:
                 value = elem.get_attribute(attr)
                 if not value:
                     trig = False
