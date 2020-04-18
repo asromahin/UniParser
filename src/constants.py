@@ -12,3 +12,10 @@ FILTERED_SYMBOLS = [
     '\\t',
     '\\r',
 ]
+
+DATA_PARSER = [
+    'href',
+    'data-ref',
+    'data-href',
+    'ref',
+]

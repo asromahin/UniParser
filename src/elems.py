@@ -1,4 +1,5 @@
 from src.utils import delete_parents, get_tree_attr_value, filter_string
+from src.constants import DATA_PARSER
 
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -6,8 +7,38 @@ import pandas as pd
 
 class UniElem():
 
-    def __init__(self, wd):
+    def __init__(self, wd, isreinit_elem=False):
         self.wd = wd
+        self.isreinit_elem = isreinit_elem
+
+    def valid_elem(self):
+        try:
+            self.elem
+            return True
+        except:
+            #print('empty elem')
+            return False
+
+    def reinit(self):
+        if(self.valid_elem):
+            if(self.isreinit_elem):
+                self.reinit_element()
+
+    def reinit_element(self):
+        soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
+
+        tag_elems = self.wd.find_elements_by_tag_name(soup_elem.tag)
+
+        for elem in tag_elems:
+            trig = True
+            for attr in soup_elem.attrs:
+                value = elem.get_attribute(attr)
+                if not value:
+                    trig = False
+
+            if trig:
+                self.elem = elem
+                break
 
 
 class UniPaginator(UniElem):
@@ -34,7 +65,7 @@ class UniPaginator(UniElem):
 class UniTable(UniElem):
 
     def __init__(self, wd, table_elem, rows_tag=None, columns_tag=None):
-        super().__init__(wd)
+        super().__init__(wd, isreinit_elem=True)
 
         self.rows_tag = rows_tag
         self.columns_tag = columns_tag
@@ -43,13 +74,13 @@ class UniTable(UniElem):
 
     def reinit(self, new_table):
 
-        self.table_elem = new_table
-        self.table_elem = BeautifulSoup(self.table_elem.get_attribute('innerHTML'), 'html.parser')
+        super().reinit()
 
-        print(len(self.table_elem.find_all({'data-ref': True})))
+        self.elem = new_table
+        soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
 
         if self.rows_tag:
-            self.rows = self.get_rows(self.table_elem, self.rows_tag)
+            self.rows = self.get_rows(soup_elem, self.rows_tag)
         if self.columns_tag:
             if self.rows:
                 self.rows_data = []
@@ -77,6 +108,30 @@ class UniTable(UniElem):
                             row_data[str(j)+"_text"] = filter_string(text_data)
                 res_df.append(row_data.copy())
         return pd.DataFrame(res_df)
+
+class UniData(UniElem):
+    def __init__(self, wd, elem):
+        super().__init__(wd, isreinit_elem=True)
+        self.elem = elem
+
+    def reinit(self):
+        super().reinit()
+
+    def get_data(self):
+        result = {}
+        soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
+        children = soup_elem.getChildren(recursive=True)
+        for child in children:
+            for attr in DATA_PARSER:
+                if(attr in child.attrs):
+                    result[attr]=child[attr]
+
+            text_data = child.getText()
+            if(text_data):
+                result['text'] = text_data
+        return result
+
+
 
 
 
