@@ -54,3 +54,6 @@ def filter_string(str):
 
 def get_wd_tag(elem):
     return elem.get_attribute('outerHTML').split(' ', 1)[0].replace('<', '').replace('>', '').strip()
+
+def get_wd_attrs(elem):
+    return elem.get_attribute('outerHTML').split(' ', 1)[0].replace('<', '').replace('>', '').strip()

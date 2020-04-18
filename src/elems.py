@@ -7,9 +7,15 @@ import pandas as pd
 
 class UniElem():
 
-    def __init__(self, wd, isreinit_elem=False):
+    def __init__(self, wd, elem=None, isreinit_elem=False):
         self.wd = wd
         self.isreinit_elem = isreinit_elem
+        self.elem = elem
+        if(self.elem):
+            self.tag_elem = get_wd_tag(self.elem)
+            soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
+            self.attrs = soup_elem.attrs
+
 
     def valid_elem(self):
         return 'elem' in dir(self)
@@ -62,12 +68,10 @@ class UniPaginator(UniElem):
 class UniTable(UniElem):
 
     def __init__(self, wd, table_elem, rows_tag=None, columns_tag=None):
-        super().__init__(wd, isreinit_elem=True)
+        super().__init__(wd, table_elem, isreinit_elem=True)
 
         self.rows_tag = rows_tag
         self.columns_tag = columns_tag
-
-        self.elem = table_elem
 
         self.reinit()
 
