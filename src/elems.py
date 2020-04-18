@@ -119,7 +119,7 @@ class UniTable(UniElem):
 
 class UniData(UniElem):
     def __init__(self, wd, elem):
-        super().__init__(wd, isreinit_elem=True)
+        super().__init__(wd, elem=elem, isreinit_elem=True)
         self.elem = elem
 
     def reinit(self):
