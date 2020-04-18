@@ -8,9 +8,9 @@ LIST_PAGINATION_ATTRS = [
 ]
 
 FILTERED_SYMBOLS = [
-    '\\n',
-    '\\t',
-    '\\r',
+    '\n',
+    '\t',
+    '\r',
 ]
 
 DATA_PARSER = [
