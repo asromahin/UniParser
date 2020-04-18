@@ -12,12 +12,7 @@ class UniElem():
         self.isreinit_elem = isreinit_elem
 
     def valid_elem(self):
-        try:
-            self.elem
-            return True
-        except:
-            #print('empty elem')
-            return False
+        return 'elem' in dir(self)
 
     def reinit(self):
         if(self.valid_elem):
