@@ -1,4 +1,4 @@
-from src.utils import delete_parents, get_tree_attr_value, filter_string
+from src.utils import delete_parents, get_tree_attr_value, filter_string, get_wd_tag
 from src.constants import DATA_PARSER
 
 from bs4 import BeautifulSoup
@@ -22,8 +22,9 @@ class UniElem():
     def reinit_element(self):
         soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
 
-        tag_elems = self.wd.find_elements_by_tag_name(str(soup_elem.name))
-        print(soup_elem.name)
+        tag_elem = get_wd_tag(self.elem)
+        print(tag_elem)
+        tag_elems = self.wd.find_elements_by_tag_name(tag_elem)
 
         for elem in tag_elems:
             trig = True
