@@ -136,7 +136,7 @@ class UniData(UniElem):
 
             text_data = child.getText()
             if(text_data):
-                result['text'] = text_data
+                result['text'] = filter_string(text_data)
         return result
 
 
