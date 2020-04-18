@@ -128,10 +128,11 @@ class UniData(UniElem):
         result = {}
         soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
         children = soup_elem.findChildren(recursive=True)
+        children.append(soup_elem)
         for child in children:
             for attr in DATA_PARSER:
                 if(attr in child.attrs):
-                    result[attr]=child[attr]
+                    result[attr] = child[attr]
 
             text_data = child.getText()
             if(text_data):
