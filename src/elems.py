@@ -1,4 +1,4 @@
-from src.utils import delete_parents, get_tree_attr_value, filter_string, get_wd_tag
+from src.utils import delete_parents, get_tree_attr_value, filter_string, get_wd_tag, screen_elem, get_wd_xpath
 from src.constants import DATA_PARSER
 
 from bs4 import BeautifulSoup
@@ -7,47 +7,56 @@ import pandas as pd
 
 class UniElem():
 
-    def __init__(self, wd, elem=None, isreinit_elem=False):
+    def __init__(self, wd, elem=None, isreinit_elem=True):
         self.wd = wd
         self.isreinit_elem = isreinit_elem
         self.elem = elem
-        if(self.elem):
+        if self.elem:
             self.tag_elem = get_wd_tag(self.elem)
             soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
             self.attrs_elem = soup_elem.attrs
-
+            self.xpath = get_wd_xpath(self.elem)
+            self.__reinit()
 
     def valid_elem(self):
         return 'elem' in dir(self)
 
+    def __reinit(self):
+        if self.xpath:
+            self.elem = self.wd.find_element_by_xpath(self.xpath)
+        self.reinit()
+
     def reinit(self):
-        if(self.valid_elem):
-            if(self.isreinit_elem):
-                self.reinit_element()
-
-    def reinit_element(self):
-        #soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
-
-        #tag_elem = get_wd_tag(self.elem)
-        #print(tag_elem)
-        tag_elems = self.wd.find_elements_by_tag_name(self.tag_elem)
-
-        for elem in tag_elems:
-            trig = True
-            for attr in self.attrs_elem:
-                value = elem.get_attribute(attr)
-                if not value:
-                    trig = False
-
-            if trig:
-                self.elem = elem
-                break
+        pass
 
     def save_as_screen(self, screen_name):
         if(self.elem):
-            print(self.elem.location, self.elem.size)
-            self.wd.execute_script("arguments[0].scrollIntoView();", self.elem)
-            self.wd.save_screenshot(screen_name)
+            self.wd.set_window_size(self.elem.size['width'], self.elem.size['height'])
+            screen_elem(self.elem, screen_name)
+
+
+class DataElem(UniElem):
+
+    def __init__(self, wd, elem, attr_keys=[]):
+        super().__init__(wd=wd, elem=elem)
+        self.attr_keys = attr_keys
+        self.get_data()
+
+    def get_data(self):
+        res_data = {}
+        if self.attr_keys:
+            for key in self.attr_keys:
+                key_data = self.elem.get_attribute(key)
+                res_data[key] = key_data
+        else:
+            text_data = self.elem.getText()
+            res_data['text'] = text_data
+        self.data = res_data
+        return res_data
+
+    def reinit(self):
+        self.get_data()
+
 
 
 
@@ -60,7 +69,7 @@ class UniPaginator(UniElem):
         self.current_page = current_page
         self.isscript = isscript
 
-    def open_page(self, page):
+    def select_page(self, page):
         next = self.next_format.format(page)
         if self.isscript:
             self.wd.execute_script(next)
@@ -69,7 +78,7 @@ class UniPaginator(UniElem):
         self.current_page = page
 
     def next_page(self):
-        self.open_page(self.current_page+1)
+        self.select_page(self.current_page+1)
 
 
 class UniTable(UniElem):
@@ -84,7 +93,6 @@ class UniTable(UniElem):
 
     def reinit(self):
 
-        super().reinit()
         soup_elem = BeautifulSoup(self.elem.get_attribute('innerHTML'), 'html.parser')
 
         if self.rows_tag:
@@ -115,14 +123,11 @@ class UniTable(UniElem):
                         if text_data:
                             row_data[str(j)+"_text"] = filter_string(text_data)
                 res_df.append(row_data.copy())
-        return pd.DataFrame(res_df)
+        return pd.DataFrame(res_df)#.drop(labels=[None], axis=0, index=None, columns=None, level=None, inplace=False, errors='raise')
 
 class UniData(UniElem):
     def __init__(self, wd, elem):
         super().__init__(wd, elem=elem, isreinit_elem=True)
-
-    def reinit(self):
-        super().reinit()
 
     def get_data(self):
         result = {}

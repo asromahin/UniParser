@@ -19,3 +19,13 @@ DATA_PARSER = [
     'data-href',
     'ref',
 ]
+
+TABLES_KEYS = {
+    'table': ['table'],
+    'row': ['tr'],
+    'column': ['th'],
+}
+
+BUTTONS_KEYS = {
+    'click_button': ['button', 'btn', '']
+}
