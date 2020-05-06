@@ -1,10 +1,28 @@
-"""
-CONSTANTS FOR APPLICATION
-"""
+KEY_TABLE = [
+    'table',
+]
 
-LIST_PAGINATION_ATTRS = [
-    'nav',
-    'pagination',
+KEY_TABLE_ROW = [
+    'tr',
+]
+
+KEY_TABLE_COLUMN = [
+    'td',
+]
+
+KEY_PAGINATOR_TAG = [
+    'nav'
+]
+
+KEY_PAGINATOR = [
+    {'class': 'navig'},
+    {'class': 'pagin'},
+    #{'id': 'pagin'},
+]
+
+PAGINATOR_LINKS = [
+    {'href': None},
+    {'on_click': None},
 ]
 
 FILTERED_SYMBOLS = [
@@ -13,19 +31,7 @@ FILTERED_SYMBOLS = [
     '\r',
 ]
 
-DATA_PARSER = [
-    'href',
-    'data-ref',
-    'data-href',
-    'ref',
+KEY_IMAGES = [
+    'img',
+    'image',
 ]
-
-TABLES_KEYS = {
-    'table': ['table'],
-    'row': ['tr'],
-    'column': ['th'],
-}
-
-BUTTONS_KEYS = {
-    'click_button': ['button', 'btn', '']
-}

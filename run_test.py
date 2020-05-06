@@ -1,27 +1,26 @@
-from src.parser import PageParser
-from src.utils import screen_elem, get_wd_xpath
+from src.browser.browser import UniWebBrowser
+import os
 import time
 
-parser = PageParser(src_wd='webdriver/chromedriver.exe', is_hide=True)
-parser.get_page('https://game-tournaments.com/lol')
-#time.sleep(1)
-#print(parser.analyze_page())
-print(parser.wd.title)
-#print(parser.find_tables()[-1].to_df().to_csv('result.csv'))
 
-#curtime = time.time()
-test_elem = parser.wd.find_elements_by_tag_name('div')[-1]
-#print(time.time()-curtime)
+'https://www.worldometers.info/ru/'
+'https://vk.com'
+'https://game-tournaments.com/lol'
+'https://www.avito.ru/moskva'
+'https://www.avito.ru/moskva/avtomobili?radius=0'
 
 
-test_xpath = get_wd_xpath(test_elem)
+curtime = time.time()
+parser = UniWebBrowser(url='https://www.avito.ru/moskva/avtomobili?radius=0', src_wd='webdriver/chromedriver.exe', is_hide=True,
+                       is_find_elements=True)
 
-#curtime = time.time()
-result_elem = parser.wd.find_element_by_xpath(test_xpath)
-#print(time.time()-curtime)
-
-
-print(test_xpath)
-print(test_elem)
-print(result_elem)
-print(result_elem == test_elem)
+print(time.time()-curtime)
+print(parser.images)
+for image in parser.images:
+    try:
+        print(image.elem.get_selenium_element(parser.wd).get_attribute('outerHTML'))
+    except:
+        print('error')
+print(parser.paginators)
+print(parser.tables)
+#parser.quit()
