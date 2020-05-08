@@ -19,6 +19,8 @@ class UniWebBrowser(UniNode):
         self.is_hide = is_hide
         self.is_find_elements = is_find_elements
 
+        self.all_elems = []
+
         if url:
             self.get_page(url=url)
 
@@ -50,7 +52,7 @@ class UniWebBrowser(UniNode):
         return screen
 
 
-    def reinit(self):
+    def reinit(self, is_update=True):
         self.soup = BeautifulSoup(self.wd.page_source, 'html.parser')
         super(UniWebBrowser, self).__init__(self.soup)
         self.elements = self.get_children(is_recurse=True)
@@ -61,6 +63,14 @@ class UniWebBrowser(UniNode):
             self.paginators = self.find_paginators()
 
             self.images = self.find_images()
+
+        if is_update:
+            self.update()
+
+    def update(self):
+        print('update_page!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        for elem in self.all_elems:
+            elem.update()
 
     def listen(self, interval=1, max_timer=None):
         start_timer = time.time()
@@ -93,11 +103,11 @@ class UniWebBrowser(UniNode):
 
             cur_time = time.time() - start_timer
             if cur_time > max_timer:
-                return None
+                break
             time.sleep(interval)
-            self.reinit()
+           # self.reinit(is_update=False)
 
-        return soup
+        self.reinit(is_update=True)
 
     def find_tables(self):
         collect_tables = []
@@ -131,6 +141,7 @@ class UniWebBrowser(UniNode):
         for key in constants.KEY_IMAGES:
             images = self.find_elements_by_tag_name(key, is_sim=True)
             res_images.extend(images)
+
         for image in res_images:
             image_container = UniImageContainer(self, image)
             res.append(image_container)

@@ -2,6 +2,8 @@ from src.browser.browser import UniWebBrowser
 import os
 import time
 
+from src.behaviour.behaviour import UniBehaviourStart, UniBehaviourMovePaginator
+
 
 'https://www.worldometers.info/ru/'
 'https://vk.com'
@@ -11,16 +13,12 @@ import time
 
 
 curtime = time.time()
-parser = UniWebBrowser(url='https://www.avito.ru/moskva/avtomobili?radius=0', src_wd='webdriver/chromedriver.exe', is_hide=True,
+parser = UniWebBrowser(url='https://game-tournaments.com/lol', src_wd='webdriver/chromedriver.exe', is_hide=False,
                        is_find_elements=True)
-
 print(time.time()-curtime)
-print(parser.images)
-for image in parser.images:
-    try:
-        print(image.elem.get_selenium_element(parser.wd).get_attribute('outerHTML'))
-    except:
-        print('error')
-print(parser.paginators)
-print(parser.tables)
-#parser.quit()
+start = UniBehaviourStart(parser)
+start.set_child(UniBehaviourMovePaginator(parser, parser.paginators[0], max_page=5))
+
+res = start.move()
+
+df = res[list(res.keys())[0]].to_csv('result.csv')
