@@ -51,29 +51,51 @@ class UniNode():
                 else:
                     self.__set_child(child, index=None)
 
-    def __find_elements_by(self, by_key, func_is, func_value=None, value_key=None, is_sim=True, is_recurse=True):
+    def __find_elements_by(self, by_key, func_is, func_value=None, value_key=None, is_sim=True, is_recurse=True, is_children=True):
         if not func_value:
             func_value = self.__get_pass
         res = []
-        for child in self.children:
-            if func_is(by_key=by_key, child=child, is_sim=is_sim):
-                value = func_value(child, value_key)
-                res.append(value)
-            if is_recurse:
-                res.extend(child.__find_elements_by(by_key=by_key, func_is=func_is, func_value=func_value, value_key=value_key, is_sim=is_sim, is_recurse=True))
+        if is_children:
+            for child in self.children:
+                if func_is(by_key=by_key, child=child, is_sim=is_sim):
+                    value = func_value(child, value_key)
+                    res.append(value)
+                if is_recurse:
+                    res.extend(child.__find_elements_by(by_key=by_key, func_is=func_is, func_value=func_value,
+                                                        value_key=value_key, is_sim=is_sim, is_recurse=True, is_children=is_children))
+        else:
+            if self.parent:
+                if func_is(by_key=by_key, child=self.parent, is_sim=is_sim):
+                    value = func_value(self.parent, value_key)
+                    res.append(value)
+                if is_recurse:
+                    res.extend(self.parent.__find_elements_by(by_key=by_key, func_is=func_is, func_value=func_value,
+                                                        value_key=value_key, is_sim=is_sim, is_recurse=True, is_children=is_children))
         return res
 
-    def __find_element_by(self, by_key, func_is, func_value=None, value_key=None, is_sim=True, is_recurse=True):
+    def __find_element_by(self, by_key, func_is, func_value=None, value_key=None, is_sim=True, is_recurse=True, is_children=True):
         if not func_value:
             func_value = self.__get_pass
-        for child in self.children:
-            if func_is(by_key, child, is_sim=is_sim):
-                value = func_value(child, value_key)
-                return value
-            if is_recurse:
-                res = child.__find_elements_by(by_key=by_key, func_is=func_is, func_value=func_value, value_key=value_key, is_sim=is_sim, is_recurse=True)
-                if res:
-                    return res
+        if is_children:
+            for child in self.children:
+                if func_is(by_key=by_key, child=child, is_sim=is_sim):
+                    value = func_value(child=child, key=value_key)
+                    return value
+                if is_recurse:
+                    res = child.__find_element_by(by_key=by_key, func_is=func_is, func_value=func_value,
+                                                   value_key=value_key, is_sim=is_sim, is_recurse=True, is_children=is_children)
+                    if res:
+                        return res
+        else:
+            if self.parent:
+                if func_is(by_key=by_key, child=self.parent, is_sim=is_sim):
+                    value = func_value(child=self.parent, key=value_key)
+                    return value
+                if is_recurse:
+                    res = self.parent.__find_element_by(by_key=by_key, func_is=func_is, func_value=func_value,
+                                                   value_key=value_key, is_sim=is_sim, is_recurse=True, is_children=is_children)
+                    if res:
+                        return res
         return None
 
     def __by_pass(self, child, by_key, is_sim=False):
@@ -84,6 +106,9 @@ class UniNode():
             return by_key == child.xpath
         else:
             return by_key in child.xpath
+
+    def __by_elem(self, child, by_key, is_sim=False):
+        return by_key == child
 
     def __by_changed(self, child, by_key=None, is_sim=False):
         return child.is_changed
@@ -132,20 +157,24 @@ class UniNode():
                             return True
         return False
 
-    def find_elements_by_tag_name(self, tag, is_recurse=True, is_sim=False):
-        return self.__find_elements_by(by_key=tag, func_is=self.__by_tag_name, is_recurse=is_recurse, is_sim=is_sim)
+    def find_elements_by_tag_name(self, tag, is_recurse=True, is_sim=False, is_children=True):
+        return self.__find_elements_by(by_key=tag, func_is=self.__by_tag_name, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
 
-    def find_elements_by_xpath(self, xpath, is_recurse=True, is_sim=False):
-        return self.__find_elements_by(by_key=xpath, func_is=self.__by_xpath, is_recurse=is_recurse, is_sim=is_sim)
+    def find_elements_by_xpath(self, xpath, is_recurse=True, is_sim=False, is_children=True):
+        return self.__find_elements_by(by_key=xpath, func_is=self.__by_xpath, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
 
-    def find_element_by_xpath(self, xpath, is_recurse=True, is_sim=False):
-        return self.__find_element_by(by_key=xpath, func_is=self.__by_xpath, is_recurse=is_recurse, is_sim=is_sim)
+    def find_element_by_xpath(self, xpath, is_recurse=True, is_sim=False, is_children=True):
+        return self.__find_element_by(by_key=xpath, func_is=self.__by_xpath, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
 
-    def find_elements_by_changed(self, is_recurse=True, is_sim=False):
-        return self.__find_elements_by(by_key=None, func_is=self.__by_changed, is_recurse=is_recurse, is_sim=is_sim)
+    def find_elements_by_changed(self, is_recurse=True, is_sim=False, is_children=True):
+        return self.__find_elements_by(by_key=None, func_is=self.__by_changed, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
 
-    def find_elements_by_attrs(self, attrs={}, is_recurse=True, is_sim=True):
-        return self.__find_elements_by(by_key=attrs, func_is=self.__by_attrs, is_recurse=is_recurse, is_sim=is_sim)
+    def find_elements_by_attrs(self, attrs={}, is_recurse=True, is_sim=True, is_children=True):
+        return self.__find_elements_by(by_key=attrs, func_is=self.__by_attrs, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
+
+    def find_element(self, elem, is_recurse=True, is_sim=True, is_children=True):
+        return self.__find_element_by(by_key=elem, func_is=self.__by_elem, is_recurse=is_recurse, is_sim=is_sim,
+                                       is_children=is_children)
 
     def __get_pass(self, child, key=None):
         return child
@@ -200,3 +229,24 @@ class UniNode():
                 new_res.append(child.xpath)
 
         return changed_res, miss_res, new_res
+
+    def get_refs(self, is_recurse=True):
+        res = []
+        for attr_key in self.attrs.keys():
+            if 'ref' in attr_key:
+                res.append(self.attrs[attr_key])
+            elif 'src' in attr_key:
+                res.append(self.attrs[attr_key])
+        if is_recurse:
+            for child in self.children:
+                if child.attrs:
+                    #print(child.attrs, child.text)
+                    for attr_key in child.attrs.keys():
+                        if 'ref' in attr_key:
+                            res.append(child.attrs[attr_key])
+                        elif 'src' in attr_key:
+                            res.append(child.attrs[attr_key])
+                    if child.children:
+                        res.extend(child.get_refs(is_recurse=is_recurse))
+        #print(res)
+        return res

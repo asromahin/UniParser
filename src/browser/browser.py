@@ -68,35 +68,33 @@ class UniWebBrowser(UniNode):
             self.update()
 
     def update(self):
-        print('update_page!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        #print('update_page!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         for elem in self.all_elems:
             elem.update()
-
-    def listen(self, interval=1, max_timer=None):
-        start_timer = time.time()
-        while True:
-            time.sleep(interval)
-            if self.is_changed_page():
-                soup = BeautifulSoup(self.wd.page_source, 'html.parser')
-                ctime = time.time()
-                new_node = UniNode(soup)
-                diff = self.get_difference(new_node)
-                print(time.time()-ctime, len(diff[0]), len(diff[1]), len(diff[2]))
-                cur_time = time.time() - start_timer
-                if max_timer:
-                    if cur_time > max_timer:
-                        return None
-                #self.reinit()
-
 
     def is_changed_page(self):
         soup = BeautifulSoup(self.wd.page_source, 'html.parser')
         res = (soup != self.soup)
         return res
 
-    def get_stable_page(self, interval=0.5, max_timer=10):
-
+    def is_changed_element_tree(self, elements_tree):
         soup = BeautifulSoup(self.wd.page_source, 'html.parser')
+        tree = UniNode(soup_elem=soup)
+        trig_res = True
+        for element_tree in elements_tree:
+            #print(element_tree.elem.xpath)
+            new_elem = tree.find_elements_by_xpath(element_tree.elem.xpath)[0]
+            if new_elem:
+                changed, miss, new = element_tree.elem.get_difference(new_elem)
+                print(len(changed))
+                if not changed:
+                    trig_res = False
+        print(trig_res)
+        return trig_res
+
+    #def get_stable(self, func_stable):
+
+    def get_stable_page(self, interval=0.5, max_timer=10):
         start_timer = time.time()
         time.sleep(interval)
         while self.is_changed_page():
@@ -105,8 +103,21 @@ class UniWebBrowser(UniNode):
             if cur_time > max_timer:
                 break
             time.sleep(interval)
-           # self.reinit(is_update=False)
+            self.reinit(is_update=False)
+        self.reinit(is_update=True)
 
+    def get_stable_tree(self, elements_tree, interval=0.5, max_timer=10):
+
+        start_timer = time.time()
+        time.sleep(interval)
+        while self.is_changed_element_tree(elements_tree):
+            cur_time = time.time() - start_timer
+            self.history.set_url(self.url, cur_time)
+            print(self.history.history)
+            if cur_time > max_timer:
+                break
+            self.reinit(is_update=True)
+            time.sleep(interval)
         self.reinit(is_update=True)
 
     def find_tables(self):

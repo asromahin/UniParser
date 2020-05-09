@@ -18,13 +18,10 @@ class UniPaginator(UniElement):
         return res
 
     def get_current_page(self):
-        print(self.paginator_elems)
-        print('-'*60)
         for i, elem in enumerate(self.paginator_elems):
-            #print(elem.parent.attrs)
-            if 'class' in elem.parent.attrs.keys():
-                if elem.parent.attrs['class'] == ['active']:
-                    return i
+            active_elem = elem.find_elements_by_attrs({'class': 'active'}, is_sim=False, is_children=False)
+            if active_elem:
+                return i
 
     def update(self):
         super().update()
@@ -39,14 +36,13 @@ class UniPaginator(UniElement):
         pass
 
     def next(self):
-        print('NEXT'*20)
         if self.paginator_elems:
             new_index = self.current_elem+1
             if new_index < len(self.paginator_elems):
                 self.browser.click(self.paginator_elems[new_index])
-                print('TOCLICK' * 20)
-                self.browser.get_stable_page(interval=0.5)
-                print('TOSTABLE' * 20)
+                #self.browser.get_stable_tree([self], interval=0.3)
+                self.browser.get_stable_page(interval=0.3)
+                #self.browser.reinit()
                 return True
             else:
                 return False

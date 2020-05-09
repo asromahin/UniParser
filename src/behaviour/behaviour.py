@@ -11,6 +11,12 @@ class UniBehaviour():
         self.child = behaviour
         self.child.parent = self
 
+    def add(self, behaviour):
+        if self.child:
+            self.child.add(behaviour)
+        else:
+            self.set_child(behaviour)
+
     def insert_child(self, behaviour):
         print(behaviour)
         buf_child = self.child
@@ -52,9 +58,13 @@ class UniBehaviourMovePaginator(UniBehaviour):
     def move(self, result={}):
         is_next = self.paginator.next()
         while is_next:
-            print(is_next, self.paginator, self.paginator.elem)
+            #print(is_next, self.paginator, self.paginator.elem)
             result = self.get_data(result)
             is_next = self.paginator.next()
+            self.cur_page += 1
+            if self.max_page:
+                if self.cur_page >= self.max_page:
+                    break
         return result
 
     def get_data(self, result={}):

@@ -17,8 +17,10 @@ parser = UniWebBrowser(url='https://game-tournaments.com/lol', src_wd='webdriver
                        is_find_elements=True)
 print(time.time()-curtime)
 start = UniBehaviourStart(parser)
-start.set_child(UniBehaviourMovePaginator(parser, parser.paginators[0], max_page=5))
+start.add(UniBehaviourMovePaginator(parser, parser.paginators[1]))
 
 res = start.move()
 
-df = res[list(res.keys())[0]].to_csv('result.csv')
+df = res[list(res.keys())[2]].to_csv('result.csv')
+
+parser.quit()
