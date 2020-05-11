@@ -12,7 +12,7 @@ class UniTable(UniElement):
         elif row_tag and column_tag:
             self.table = self.get_table(row_tag=row_tag, column_tag=column_tag)
 
-        self.table_data = self.get_table_data()
+        self.data = self.get_table_data()
 
     def __get_by_tag_keys(self, elem, keys):
         for key in keys:

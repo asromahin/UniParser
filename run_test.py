@@ -1,6 +1,7 @@
 from src.browser.browser import UniWebBrowser
 import os
 import time
+import pandas as pd
 
 from src.behaviour.behaviour import UniBehaviourStart, UniBehaviourMovePaginator
 
@@ -13,14 +14,19 @@ from src.behaviour.behaviour import UniBehaviourStart, UniBehaviourMovePaginator
 
 
 curtime = time.time()
-parser = UniWebBrowser(url='https://game-tournaments.com/lol', src_wd='webdriver/chromedriver.exe', is_hide=False,
+parser = UniWebBrowser(url='https://game-tournaments.com/lol', src_wd='webdriver/chromedriver.exe', is_hide=True,
                        is_find_elements=True)
 print(time.time()-curtime)
 start = UniBehaviourStart(parser)
-start.add(UniBehaviourMovePaginator(parser, parser.paginators[1]))
+start.add(UniBehaviourMovePaginator(parser, parser.paginators[1], changed_size=2))
 
 res = start.move()
+#res.to_csv('res.csv')
+lens_res = []
+for key in res.keys():
+    lens_res.append(len(res[key]))
+print(list(set(lens_res)))
 
-df = res[list(res.keys())[2]].to_csv('result.csv')
+pd.DataFrame(res).to_csv('res.csv')
 
 parser.quit()

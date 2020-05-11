@@ -1,12 +1,13 @@
 from src.elements.element import UniElement
 import src.constants as constants
-
+import time
 
 class UniPaginator(UniElement):
 
     def __init__(self, browser, elem=None):
         super(UniPaginator, self).__init__(browser, elem)
         self.update()
+
 
     def parse_paginator(self):
         res = []
@@ -21,6 +22,7 @@ class UniPaginator(UniElement):
         for i, elem in enumerate(self.paginator_elems):
             active_elem = elem.find_elements_by_attrs({'class': 'active'}, is_sim=False, is_children=False)
             if active_elem:
+                self.current_page = int(active_elem[0].text)
                 return i
 
     def update(self):
@@ -33,16 +35,26 @@ class UniPaginator(UniElement):
         pass
 
     def to_pos(self, pos):
-        pass
+        if pos > self.current_page:
+            self.next()
+            self.to_pos(pos)
+        elif pos < self.current_page:
+            self.prev()
+            self.to_pos(pos)
+        else:
+            return True
 
     def next(self):
         if self.paginator_elems:
             new_index = self.current_elem+1
             if new_index < len(self.paginator_elems):
+                start_time = time.time()
                 self.browser.click(self.paginator_elems[new_index])
                 #self.browser.get_stable_tree([self], interval=0.3)
                 self.browser.get_stable_page(interval=0.3)
                 #self.browser.reinit()
+                print(self.current_page)
+                print(time.time()-start_time)
                 return True
             else:
                 return False
@@ -51,4 +63,18 @@ class UniPaginator(UniElement):
 
 
     def prev(self):
-        pass
+        if self.paginator_elems:
+            new_index = self.current_elem - 1
+            if new_index < len(self.paginator_elems):
+                start_time = time.time()
+                self.browser.click(self.paginator_elems[new_index])
+                # self.browser.get_stable_tree([self], interval=0.3)
+                self.browser.get_stable_page(interval=0.3)
+                # self.browser.reinit()
+                print(len(self.browser.all_elems))
+                print(time.time() - start_time)
+                return True
+            else:
+                return False
+        else:
+            return False

@@ -24,14 +24,13 @@ class UniWebBrowser(UniNode):
         if url:
             self.get_page(url=url)
 
-            self.reinit()
-
     def get_page(self, url):
         start_time = time.time()
         self.wd.get(url)
         end_time = time.time() - start_time
         self.url = url
         self.history.set_url(url, end_time)
+        self.reinit()
 
     def quit(self):
         self.wd.quit()
@@ -53,16 +52,18 @@ class UniWebBrowser(UniNode):
 
 
     def reinit(self, is_update=True):
+
         self.soup = BeautifulSoup(self.wd.page_source, 'html.parser')
         super(UniWebBrowser, self).__init__(self.soup)
-        self.elements = self.get_children(is_recurse=True)
+        #self.elements = self.get_children(is_recurse=True)
+
 
         if self.is_find_elements:
             self.tables = self.find_tables()
 
             self.paginators = self.find_paginators()
 
-            self.images = self.find_images()
+            #self.images = self.find_images()
 
         if is_update:
             self.update()

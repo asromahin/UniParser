@@ -8,21 +8,29 @@ class UniNode():
         self.attrs = self.soup_elem.attrs
         self.text = filter_string(self.soup_elem.getText())
 
+        self.parent_xpath = parent_xpath
+
         self.parent = parent
         self.children = []
+        self.children_xpath_node = {}
 
         self.is_changed = False
 
         self.index = index
 
+        self.xpath_node = self.tag
+
+        if self.index:
+            self.xpath_node += f'[{self.index}]'
+
         if parent:
-            self.xpath = '/'.join([parent_xpath, self.tag])
+            self.xpath = '/'.join([parent_xpath, self.xpath_node])
         else:
             self.xpath = parent_xpath
-        if self.index:
-            self.xpath += f'[{self.index}]'
 
         self.__find_children()
+
+        self.refs = self.get_refs(is_recurse=False)
 
         self.data = {
             'tag': self.tag,
@@ -30,10 +38,16 @@ class UniNode():
             'xpath': self.xpath,
             'len_children': len(self.children),
             'text': self.text,
+            'refs': self.refs,
         }
 
+    def copy(self):
+        return UniNode(soup_elem=self.soup_elem, parent_xpath=self.parent_xpath, parent=self.parent, index=self.index)
+
     def __set_child(self, soup_elem, index=None):
-        self.children.append(UniNode(soup_elem, parent_xpath=self.xpath, parent=self, index=index))
+        node = UniNode(soup_elem, parent_xpath=self.xpath, parent=self, index=index)
+        self.children.append(node)
+        self.children_xpath_node[node.xpath_node] = node
 
     def __find_children(self):
         children = self.soup_elem.findChildren(recursive=False)
@@ -160,12 +174,6 @@ class UniNode():
     def find_elements_by_tag_name(self, tag, is_recurse=True, is_sim=False, is_children=True):
         return self.__find_elements_by(by_key=tag, func_is=self.__by_tag_name, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
 
-    def find_elements_by_xpath(self, xpath, is_recurse=True, is_sim=False, is_children=True):
-        return self.__find_elements_by(by_key=xpath, func_is=self.__by_xpath, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
-
-    def find_element_by_xpath(self, xpath, is_recurse=True, is_sim=False, is_children=True):
-        return self.__find_element_by(by_key=xpath, func_is=self.__by_xpath, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
-
     def find_elements_by_changed(self, is_recurse=True, is_sim=False, is_children=True):
         return self.__find_elements_by(by_key=None, func_is=self.__by_changed, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
 
@@ -175,6 +183,24 @@ class UniNode():
     def find_element(self, elem, is_recurse=True, is_sim=True, is_children=True):
         return self.__find_element_by(by_key=elem, func_is=self.__by_elem, is_recurse=is_recurse, is_sim=is_sim,
                                        is_children=is_children)
+
+    """def find_elements_by_xpath(self, xpath, is_recurse=True, is_sim=False, is_children=True):
+        return self.__find_elements_by(by_key=xpath, func_is=self.__by_xpath, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)
+
+    def find_element_by_xpath(self, xpath, is_recurse=True, is_sim=False, is_children=True):
+        return self.__find_element_by(by_key=xpath, func_is=self.__by_xpath, is_recurse=is_recurse, is_sim=is_sim, is_children=is_children)"""
+
+    def find_element_by_xpath(self, xpath, is_recurse=True, is_sim=False, is_children=True):
+        if xpath[0] == '/':
+            xpath = xpath[1:]
+        xpath_nodes = xpath.split('/')
+        if xpath_nodes[0] in self.children_xpath_node:
+            if len(xpath_nodes) > 1:
+                return self.children_xpath_node[xpath_nodes[0]].find_element_by_xpath('/'.join(xpath_nodes[1:]), is_recurse=True, is_sim=False, is_children=True)
+            else:
+                return self.children_xpath_node[xpath_nodes[0]]
+        else:
+            return None
 
     def __get_pass(self, child, key=None):
         return child
@@ -208,6 +234,9 @@ class UniNode():
         else:
             return True
 
+    def __hash__(self):
+        return hash((self.xpath))
+
     def get_difference(self, other_node, is_recurse=True):
         changed_res = []
         miss_res = []
@@ -218,15 +247,15 @@ class UniNode():
             node = other_node.find_element_by_xpath(child.xpath)
             if node:
                 if child != node:
-                    changed_res.append(child.xpath)
+                    changed_res.append(child)
                     child.is_changed = True
             else:
-                miss_res.append(child.xpath)
+                miss_res.append(child)
 
         for child in other_children:
             node = self.find_element_by_xpath(child.xpath)
             if not node:
-                new_res.append(child.xpath)
+                new_res.append(child)
 
         return changed_res, miss_res, new_res
 
@@ -239,14 +268,6 @@ class UniNode():
                 res.append(self.attrs[attr_key])
         if is_recurse:
             for child in self.children:
-                if child.attrs:
-                    #print(child.attrs, child.text)
-                    for attr_key in child.attrs.keys():
-                        if 'ref' in attr_key:
-                            res.append(child.attrs[attr_key])
-                        elif 'src' in attr_key:
-                            res.append(child.attrs[attr_key])
-                    if child.children:
-                        res.extend(child.get_refs(is_recurse=is_recurse))
-        #print(res)
+                res.extend(child.get_refs(is_recurse=is_recurse))
+
         return res
