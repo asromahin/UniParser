@@ -259,15 +259,12 @@ class UniNode():
 
         return changed_res, miss_res, new_res
 
-    def get_refs(self, is_recurse=True):
-        res = []
+    def get_refs(self, is_recurse=False):
+        res = {}
         for attr_key in self.attrs.keys():
-            if 'ref' in attr_key:
-                res.append(self.attrs[attr_key])
-            elif 'src' in attr_key:
-                res.append(self.attrs[attr_key])
+            if 'ref' in attr_key or 'src' in attr_key:
+                res[attr_key] = self.attrs[attr_key]
         if is_recurse:
             for child in self.children:
-                res.extend(child.get_refs(is_recurse=is_recurse))
-
+                res.update(child.get_refs(is_recurse=is_recurse))
         return res

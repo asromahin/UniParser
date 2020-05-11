@@ -51,10 +51,12 @@ class UniBehaviour():
             try:
                 if not elem.xpath in new_result.keys():
                     new_result[elem.xpath] = [elem.text]
-                    new_result[elem.xpath+'_refs'] = [elem.refs]
+                    for ref_key in elem.refs.keys():
+                        new_result[elem.xpath+ref_key] = elem.refs[ref_key]
                 else:
                     new_result[elem.xpath].append(elem.text)
-                    new_result[elem.xpath+'_refs'].append(elem.refs)
+                    for ref_key in elem.refs.keys():
+                        new_result[elem.xpath + ref_key].append(elem.refs[ref_key])
             except:
                 new_result = result
                 break
