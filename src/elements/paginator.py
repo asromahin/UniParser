@@ -20,10 +20,11 @@ class UniPaginator(UniElement):
 
     def get_current_page(self):
         for i, elem in enumerate(self.paginator_elems):
-            active_elem = elem.find_elements_by_attrs({'class': 'active'}, is_sim=False, is_children=False)
-            if active_elem:
-                self.current_page = int(active_elem[0].text)
-                return i
+            for key in constants.PAGINATOR_CURRENT:
+                active_elem = elem.find_elements_by_attrs(key, is_sim=False, is_children=False)
+                if active_elem:
+                    self.current_page = int(active_elem[0].text)
+                    return i
 
     def update(self):
         super().update()

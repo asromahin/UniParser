@@ -11,14 +11,15 @@ from src.behaviour.behaviour import UniBehaviourStart, UniBehaviourMovePaginator
 'https://game-tournaments.com/lol'
 'https://www.avito.ru/moskva'
 'https://www.avito.ru/moskva/avtomobili?radius=0'
+'https://mebelars.ru/catalog/kresla-dlya-personala.html'
 
 
 curtime = time.time()
-parser = UniWebBrowser(url='https://game-tournaments.com/lol', src_wd='webdriver/chromedriver.exe', is_hide=True,
+parser = UniWebBrowser(url='https://mebelars.ru/catalog/kresla-dlya-personala.html', src_wd='webdriver/chromedriver.exe', is_hide=True,
                        is_find_elements=True)
 print(time.time()-curtime)
 start = UniBehaviourStart(parser)
-start.add(UniBehaviourMovePaginator(parser, parser.paginators[1], changed_size=2))
+start.add(UniBehaviourMovePaginator(parser, parser.paginators[0], changed_size=2))
 
 res = start.move()
 #res.to_csv('res.csv')

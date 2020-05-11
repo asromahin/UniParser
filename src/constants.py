@@ -12,6 +12,7 @@ KEY_TABLE_COLUMN = [
 
 KEY_PAGINATOR_TAG = [
     'nav'
+    'ul',
 ]
 
 KEY_PAGINATOR = [
@@ -23,6 +24,11 @@ KEY_PAGINATOR = [
 PAGINATOR_LINKS = [
     {'href': None},
     {'on_click': None},
+]
+
+PAGINATOR_CURRENT = [
+    {'class': 'current'},
+    {'class': 'active'},
 ]
 
 FILTERED_SYMBOLS = [

@@ -143,7 +143,7 @@ class UniWebBrowser(UniNode):
             paginators = self.find_elements_by_tag_name(key)
             if paginators:
                 collect_paginators.extend(paginators)
-        for pagin in paginators:
+        for pagin in collect_paginators:
             res.append(UniPaginator(self, pagin))
         return res
 
