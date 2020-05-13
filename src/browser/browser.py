@@ -36,7 +36,8 @@ class UniWebBrowser(UniNode):
         self.wd.quit()
 
     def click(self, element):
-        self.wd.find_element_by_xpath(element.xpath).click()
+        #self.wd.find_element_by_xpath(element.xpath).click()
+        self.wd.execute_script("arguments[0].click();", self.wd.find_element_by_xpath(element.xpath))
 
     def send_keys(self, element, keys):
         self.wd.find_element_by_xpath(element.xpath).send_keys(keys)
@@ -143,7 +144,7 @@ class UniWebBrowser(UniNode):
             paginators = self.find_elements_by_tag_name(key)
             if paginators:
                 collect_paginators.extend(paginators)
-        for pagin in paginators:
+        for pagin in collect_paginators:
             res.append(UniPaginator(self, pagin))
         return res
 

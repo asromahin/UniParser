@@ -69,6 +69,11 @@ class UniNode():
         if not func_value:
             func_value = self.__get_pass
         res = []
+
+        if func_is(by_key=by_key, child=self, is_sim=is_sim):
+            value = func_value(self, value_key)
+            res.append(value)
+
         if is_children:
             for child in self.children:
                 if func_is(by_key=by_key, child=child, is_sim=is_sim):

@@ -110,7 +110,8 @@ class UniBehaviourMovePaginator(UniBehaviour):
             node_list.append(self.browser.copy())
 
         self.paginator.to_pos(start_pos)
-
+        print(node_list[0].data)
+        print(node_list[1].data)
         changed, miss, new = node_list[0].get_difference(node_list[1])
         for i, node in enumerate(node_list[1:-1]):
             nchanged, nmiss, nnew = node.get_difference(node_list[i+1])
@@ -154,6 +155,7 @@ class UniBehaviourMoveRefs(UniBehaviour):
 
         changed, miss, new = node_list[0].get_difference(node_list[1])
         for i, node in enumerate(node_list[1:-1]):
+
             nchanged, nmiss, nnew = node.get_difference(node_list[i+1])
             changed.extend(nchanged)
             #miss.extend(nmiss)

@@ -6,24 +6,65 @@ class UniPaginator(UniElement):
 
     def __init__(self, browser, elem=None):
         super(UniPaginator, self).__init__(browser, elem)
+        self.current_page = None
         self.update()
 
 
     def parse_paginator(self):
         res = []
-        for key in constants.PAGINATOR_LINKS:
-            paginators = self.elem.find_elements_by_attrs(attrs=key, is_sim=False, is_recurse=True)
-            if paginators:
-                res.extend(paginators)
-                return res
+        #for key in constants.PAGINATOR_LINKS:
+            #paginators = self.elem.find_elements_by_attrs(attrs=key, is_sim=False, is_recurse=True)
+        paginators = self.elem.get_children(is_recurse=True)
+        if paginators:
+            #print(paginators)
+            #print(paginators[0].data)
+            #print(paginators[0].data['text'])
+            res.extend(paginators)
+            #return res
+        #print('='*40)
+        #print(len(res))
+        res = list(set(res))
+        #print(len(res))
+        #print('=' * 40)
         return res
 
     def get_current_page(self):
         for i, elem in enumerate(self.paginator_elems):
-            active_elem = elem.find_elements_by_attrs({'class': 'active'}, is_sim=False, is_children=False)
-            if active_elem:
-                self.current_page = int(active_elem[0].text)
-                return i
+            for key in constants.PAGINATOR_CURRENT:
+                active_elem = elem.find_elements_by_attrs(key, is_sim=False, is_children=False)
+                if active_elem:
+                    #print(active_elem)
+                    #print(active_elem[0].data)
+                    try:
+                        #print(active_elem[0].text)
+                        self.current_page = int(active_elem[0].text)
+                        return elem
+                    except:
+                        #self.current_page = None
+                        return None
+
+    def get_next_page(self):
+        cur_elem = self.get_current_page()
+        for i, elem in enumerate(self.paginator_elems):
+            #print(elem.data)
+            try:
+                if int(elem.text) == int(cur_elem.text)+1:
+                    return elem
+            except:
+                pass
+        return None
+
+    def get_prev_page(self):
+        cur_elem = self.get_current_page()
+        for i, elem in enumerate(self.paginator_elems):
+            # print(elem.data)
+            try:
+                if int(elem.text) == int(cur_elem.text) - 1:
+                    return elem
+            except:
+                pass
+        return None
+
 
     def update(self):
         super().update()
@@ -46,15 +87,17 @@ class UniPaginator(UniElement):
 
     def next(self):
         if self.paginator_elems:
-            new_index = self.current_elem+1
-            if new_index < len(self.paginator_elems):
+            new_elem = self.get_next_page()
+            if new_elem:
                 start_time = time.time()
-                self.browser.click(self.paginator_elems[new_index])
+                print(new_elem.data)
+                self.browser.click(new_elem)
                 #self.browser.get_stable_tree([self], interval=0.3)
                 self.browser.get_stable_page(interval=0.3)
                 #self.browser.reinit()
-                print(self.current_page)
-                print(time.time()-start_time)
+                print('next')
+                print('page=', self.current_page)
+                print('time=', time.time()-start_time)
                 return True
             else:
                 return False
@@ -64,15 +107,16 @@ class UniPaginator(UniElement):
 
     def prev(self):
         if self.paginator_elems:
-            new_index = self.current_elem - 1
-            if new_index < len(self.paginator_elems):
+            new_elem = self.get_prev_page()
+            if new_elem:
                 start_time = time.time()
-                self.browser.click(self.paginator_elems[new_index])
+                self.browser.click(new_elem)
                 # self.browser.get_stable_tree([self], interval=0.3)
                 self.browser.get_stable_page(interval=0.3)
                 # self.browser.reinit()
-                print(len(self.browser.all_elems))
-                print(time.time() - start_time)
+                print('prev')
+                print('page=', self.current_page)
+                print('time=', time.time()-start_time)
                 return True
             else:
                 return False
